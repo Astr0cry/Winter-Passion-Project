@@ -1,5 +1,25 @@
-FPS = 30;
-GRAVITY = -4.9;
+const FPS = 30;
+const width = window.innerWidth;
+const height = window.innerHeight;
+class Vector2D{
+    constructor(x,y){
+        this.x=x;
+        this.y=y;
+    }
+
+    add(other){
+        this.x+=other.x;
+        this.y+=other.y;
+    }
+
+    divide(scalar){
+        this.x/scalar;
+        this.y/scalar;
+    }
+}
+
+GRAVITY = new Vector2D(0,-4.9);
+GRAVITY.divide(FPS);
 
 class Object{
     constructor(name,mass,element){
@@ -7,24 +27,35 @@ class Object{
         this.name = name;
         this.mass = mass;
         this.element = element;
-        this.velocity = 0;
-        this.xPos = Number(s.getPropertyValue("left").replace("px",""));
-        this.yPos = Number(s.getPropertyValue("top").replace("px",""));
+        this.velocity = new Vector2D(0,0);
+        console.log(this.velocity)
+        this.acc = new Vector2D(0,0)
+        this.acc.add(GRAVITY);
+        console.log(this.acc);
+        this.pos = new Vector2D(Number(s.getPropertyValue("left").replace("px","")),Number(s.getPropertyValue("bottom").replace("px","")));
+        console.log(this.pos);
     }
 
-    applyVel(){
-        t
+    update(){
+        this.velocity.add(this.acc);
+        this.pos.add(this.velocity);
+        this.element.style.bottom = `${this.pos.y}px`;
+        this.element.style.left = `${this.pos.x}px`;
+    }
+
+    handleEdges(width,height){
+        if (this.pos.x < 0 || this.pos.x < width){
+            this.acc.x = -this.acc.x;
+        }
+        if (this.pos.y < 0 || this.pos.y < height){
+            this.acc.y = -this.acc.y;
+        }
     }
 }   
 const square = new Object("square",10,document.getElementsByTagName("div")[0]);
 
 function frame(){
-    applyGrav(square);
-    square.yPos-=square.velocity;
-    square.element.style.top = `${square.yPos}px`;
-}
-function applyGrav(object){
-    object.velocity += GRAVITY;
+    square.update();
 }
 
 setInterval(frame,1000/FPS);
