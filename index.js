@@ -33,13 +33,14 @@ class Object{
         this.width = Number(s.getPropertyValue("width").replace("px",""));
         this.height = Number(s.getPropertyValue("height").replace("px",""));
         this.element = element;
-        this.velocity = new Vector2D(0,0);
+        this.velocity = new Vector2D(10,0);
         this.acc = new Vector2D(0,0)
         this.acc.add(GRAVITY);
         this.pos = new Vector2D(Number(s.getPropertyValue("left").replace("px","")),Number(s.getPropertyValue("bottom").replace("px","")));
     }
 
     update(){
+        this.handleEdges(width,height);
         this.velocity.add(this.acc);
         this.pos.add(this.velocity);
         this.element.style.bottom = `${this.pos.y}px`;
@@ -54,12 +55,18 @@ class Object{
             this.velocity.y = -this.velocity.y;
         }
     }
-}   
-const square = new Object("square",10,document.getElementsByTagName("div")[0]);
+}
+const objects = document.getElementsByClassName("object");
+const obj_Array = [];
+
+for(const object of objects){
+    obj_Array.push(new Object(object.id,Number(object.mass),object));
+}
 
 function frame(){
-    square.handleEdges(width,height);
-    square.update();
+    for(const obj of obj_Array){
+        obj.update();
+    }
 }
 
 setInterval(frame,1000/FPS);
