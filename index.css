@@ -19,7 +19,16 @@ body{
     left:100px;
     bottom:600px;
 }
-
+#circle{
+    width:100px;
+    height:100px;
+    border:solid black;
+    border-radius: 50%;
+    background-color: blue;
+    position: fixed;
+    left:200px;
+    bottom:1000px;
+}
 #ground{
     background-color: green;
     position:fixed;
